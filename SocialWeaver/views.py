@@ -27,7 +27,10 @@ class EventAPIView(MethodView):
 			for event in Event.query.all():
 				data.append(self.get_context_data(event))
 
-		return jsonify(data)
+		response = jsonify(data)
+		response.status_code = 200
+
+		return response
 
 	def post(self):
 		event = Event()
@@ -40,12 +43,15 @@ class EventAPIView(MethodView):
 		db.session.add(event)
 		db.session.commit()
 
-		response = {
+		data = {
 			'success': True,
 			'data': self.get_context_data(event)
 		}
 
-		return jsonify(response)
+		response = jsonify(data)
+		response.status_code = 200
+
+		return response
 
 	def put(self):
 		event_id = request.form.get('event_id', None)
@@ -59,21 +65,26 @@ class EventAPIView(MethodView):
 
 		db.session.commit()
 
-		response = {
+		data = {
 			'success': True,
 			'data': self.get_context_data(event)
 		}
 
-		return jsonify(response)
+		response = jsonify(data)
+		response.status_code = 200
+
+		return response
 
 	def delete(self):
 		event_id = request.form.get('event_id', None)
 		event = Event.query.get_or_404(event_id)
 
 		db.session.delete(event)
+		db.session.commit()
 
-		return jsonify({
-			'success': True
-		})
+		response = jsonify()
+		response.status_code = 200
+
+		return response
 
 
