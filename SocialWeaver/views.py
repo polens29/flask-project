@@ -30,16 +30,13 @@ class EventAPIView(MethodView):
 		return jsonify(data)
 
 	def post(self):
-		data = {}
-		for field in self.fields:
-			value = request.form.get(field, None)
-			if value:
-				if field == 'datetime':
-					value = datetime.strptime(value, "%Y-%m-%d %H:%M:%S")
+		event = Event()
+		for key, value in request.form.iteritems():
+			if key == 'datetime' and value:
+				value = datetime.strptime(value, "%Y-%m-%d %H:%M:%S")
 
-				data[field] = value
+			setattr(event, key, value)
 
-		event = Event(**data)
 		db.session.add(event)
 		db.session.commit()
 
